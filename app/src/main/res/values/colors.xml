@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="opay_green">#00FDB1</color>
+    <color name="light_blue">#4B95EC</color>
+    <color name="red">#FD0027</color>
+    <color name="blue">#005DFD</color>
+    <color name="purple">#9C00FD</color>
+    <color name="pink">#F500FD</color>
+    <color name="yellow">#F5E105</color>
+    <color name="green">#06EB5D</color>
+
+</resources>

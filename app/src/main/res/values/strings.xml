@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Update</string>
+    <string name="cyber">Cyber Security</string>
+    <string name="network">Networking</string>
+    <string name="data_science">Data Science/Analytics</string>
+    <string name="ui">UI/UX</string>
+    <string name="software">Software Engineering</string>
+    <string name="ai">AI/ML</string>
+    <string name="offline">Offline Mode</string>
+    <string name="saved_preferences">Saved Articles</string>
+    <string name="no_article">You have no saved articles</string>
+    <string name="offline_no_article">You have no saved articles in this category</string>
+    <string name="developer">Developed by Madubuike, Onyedikachi Nelson</string>
+</resources>

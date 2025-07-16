@@ -1,0 +1,53 @@
+[versions]
+agp = "8.7.1"
+androidxJunit = "1.1.5"
+cardview = "1.0.0"
+core = "1.6.1"
+gson = "2.12.1"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+lottieVersion = "3.4.0"
+material = "1.12.0"
+activity = "1.9.3"
+constraintlayout = "2.2.0"
+mockitoCore = "5.2.0"
+mockitoCoreVersion = "4.11.0"
+robolectric = "4.11.1"
+roomVersion = "2.6.1"
+runner = "1.6.2"
+truth = "1.4.2"
+workRuntime = "2.10.0"
+workTesting = "2.10.1"
+workTestingVersion = "2.9.0"
+
+[libraries]
+cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
+core = { module = "androidx.test:core", version.ref = "core" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+junit-v115 = { module = "androidx.test.ext:junit", version.ref = "androidxJunit" }
+lottie = { module = "com.airbnb.android:lottie", version.ref = "lottieVersion" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-core-v4110 = { module = "org.mockito:mockito-core", version.ref = "mockitoCoreVersion" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
+room-testing = { module = "androidx.room:room-testing", version.ref = "roomVersion" }
+rules = { module = "androidx.test:rules", version.ref = "core" }
+runner = { module = "androidx.test:runner", version.ref = "runner" }
+truth = { module = "com.google.truth:truth", version.ref = "truth" }
+work-runtime = { module = "androidx.work:work-runtime", version.ref = "workRuntime" }
+work-testing = { module = "androidx.work:work-testing", version.ref = "workTesting" }
+work-testing-v290 = { module = "androidx.work:work-testing", version.ref = "workTestingVersion" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+
