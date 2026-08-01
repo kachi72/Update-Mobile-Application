@@ -2,7 +2,6 @@ package com.systemtech.update.backgroundTasks;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.util.Xml;
 import android.widget.Toast;

@@ -2,15 +2,8 @@ package com.systemtech.update;
 
 import static com.systemtech.update.adapters.ArticleAdapter.WEB_VIEW_URL;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -21,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.systemtech.update.helpers.AppExecutors;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -51,19 +46,22 @@ public class WebPageActivity extends AppCompatActivity {
         if (intent != null) {
             String url = intent.getStringExtra(WEB_VIEW_URL);
             if (url != null) {
-                // Run full internet check in background
-                new Thread(() -> {
+                AppExecutors executors = AppExecutors.getInstance();
+                executors.networkIO().execute(() -> {
                     boolean hasInternet = hasRealInternetAccess();
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        if (!hasInternet) {
-                            showNoInternetMessage();
-                        } else {
+                    if (!hasInternet) {
+                        showNoInternetMessage();
+                    } else {
+                        executors.mainThread().execute(() -> {
+                            if (isFinishing() || isDestroyed()) {
+                                return;
+                            }
                             webView.setWebViewClient(new WebViewClient());
                             webView.getSettings().setJavaScriptEnabled(true);
                             webView.loadUrl(url);
-                        }
-                    });
-                }).start();
+                        });
+                    }
+                });
             }
         }
     }
@@ -93,20 +91,14 @@ public class WebPageActivity extends AppCompatActivity {
      */
     private void showNoInternetMessage() {
         Log.d(TAG, "showNoInternetMessage: inside method to show message for no internet");
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
+        AppExecutors.getInstance().mainThread().execute(() -> {
+            if (!isFinishing() && !isDestroyed()) {
                 Toast.makeText(WebPageActivity.this, "No internet connection available. Please check your network settings.",
                         Toast.LENGTH_LONG).show();
 
-                // Optionally finish the activity or load a local error page
-                finish(); // This will close the activity and return to previous screen
+                finish();
             }
         });
-
-
-        // Alternative: Load a local HTML error page instead
-        // webView.loadData("<html><body><h2>No Internet Connection</h2><p>Please check your network settings and try again.</p></body></html>", "text/html", "UTF-8");
     }
     
 }
