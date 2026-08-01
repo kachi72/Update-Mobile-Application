@@ -4,7 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -19,10 +19,15 @@ import com.systemtech.update.offlineMode.OfflineDataScienceActivity;
 import com.systemtech.update.offlineMode.OfflineNetworkActivity;
 import com.systemtech.update.offlineMode.OfflineSoftwareActivity;
 import com.systemtech.update.offlineMode.OfflineUiActivity;
+import com.systemtech.update.database.AppDatabase;
+import com.systemtech.update.database.Article;
+
+import java.util.List;
 
 public class OfflineActivity extends AppCompatActivity {
 
-    private Button cyber, ai, softwareEng, network, dataScience,ui, savedPreferences, help;
+    private View cyber, ai, softwareEng, network, dataScience, ui, home, savedPreferences;
+    private TextView cyberCount, aiCount, softwareCount, networkCount, dataCount, uiCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +42,7 @@ public class OfflineActivity extends AppCompatActivity {
 
         initViews();
         setOnClickButtons();
+        observeCachedArticleCounts();
     }
 
     public void cyber(){
@@ -124,10 +130,12 @@ public class OfflineActivity extends AppCompatActivity {
             }
         });
 
-        help.setOnClickListener(new View.OnClickListener() {
+        home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAlertDialog();
+                Intent intent = new Intent(OfflineActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
         });
     }
@@ -160,7 +168,34 @@ public class OfflineActivity extends AppCompatActivity {
         network = findViewById(R.id.btnNetworking);
         dataScience = findViewById(R.id.btnDataScience);
         ui = findViewById(R.id.btnUI);
+        home = findViewById(R.id.navHome);
         savedPreferences = findViewById(R.id.btnSavedPreferences);
-        help = findViewById(R.id.btnHelp);
+        cyberCount = findViewById(R.id.txtCyberCount);
+        aiCount = findViewById(R.id.txtAiCount);
+        softwareCount = findViewById(R.id.txtSoftwareCount);
+        networkCount = findViewById(R.id.txtNetworkCount);
+        dataCount = findViewById(R.id.txtDataCount);
+        uiCount = findViewById(R.id.txtUiCount);
+    }
+
+    private void observeCachedArticleCounts() {
+        AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+        db.articleDao().getAllArticles("CyberSecurity").observe(this,
+                articles -> setArticleCount(cyberCount, articles));
+        db.articleDao().getAllArticles("AI/ML").observe(this,
+                articles -> setArticleCount(aiCount, articles));
+        db.articleDao().getAllArticles("Software Engineering").observe(this,
+                articles -> setArticleCount(softwareCount, articles));
+        db.articleDao().getAllArticles("Networking").observe(this,
+                articles -> setArticleCount(networkCount, articles));
+        db.articleDao().getAllArticles("Data Science").observe(this,
+                articles -> setArticleCount(dataCount, articles));
+        db.articleDao().getAllArticles("UI/UX").observe(this,
+                articles -> setArticleCount(uiCount, articles));
+    }
+
+    private void setArticleCount(TextView countView, List<Article> articles) {
+        int count = articles == null ? 0 : articles.size();
+        countView.setText(getResources().getQuantityString(R.plurals.article_count, count, count));
     }
 }

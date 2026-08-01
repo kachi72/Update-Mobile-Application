@@ -1,8 +1,6 @@
 package com.systemtech.update.offlineMode;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,6 +18,7 @@ import com.systemtech.update.R;
 import com.systemtech.update.adapters.OfflineModeArticleAdapter;
 import com.systemtech.update.database.AppDatabase;
 import com.systemtech.update.database.Article;
+import com.systemtech.update.helpers.AppExecutors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,32 +55,28 @@ public class OfflineDataScienceActivity extends AppCompatActivity {
     }
 
     private void initWorker() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                AppDatabase db = AppDatabase.getInstance(getApplicationContext());
-                articles = db.articleDao().getArticlesByCategory("Data Science");
-                if (articles.isEmpty()){
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            hideLoadingIcon();
-                            Toast.makeText(OfflineDataScienceActivity.this, "There are no saved posts in the database for this category", Toast.LENGTH_LONG).show();
-                            showNoArticleText();
-                        }
-                    });
-                }
-                else{
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateRecycler(articles);
-                        }
-                    });
-                }
-            }
-        }).start();
+        AppExecutors executors = AppExecutors.getInstance();
+        executors.diskIO().execute(() -> {
+            AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+            List<Article> cachedArticles = db.articleDao().getArticlesByCategory("Data Science");
+            executors.mainThread().execute(() -> displayCachedArticles(cachedArticles));
+        });
 
+    }
+
+    private void displayCachedArticles(List<Article> cachedArticles) {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+
+        articles = cachedArticles;
+        if (articles.isEmpty()) {
+            hideLoadingIcon();
+            Toast.makeText(this, "There are no saved posts in the database for this category", Toast.LENGTH_LONG).show();
+            showNoArticleText();
+        } else {
+            updateRecycler(articles);
+        }
     }
 
     private void showNoArticleText() {

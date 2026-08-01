@@ -5,152 +5,152 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/home_background"
+    android:background="@color/screen_background"
     tools:context=".OfflineActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="@string/offline"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="@+id/textView"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_medium_italic"
-        android:text="What are you interested in today?"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/btnCyber"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/briefingScroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/btnCyber"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="180dp"
-        android:backgroundTint="@color/opay_green"
-        android:text="@string/cyber"
-        app:layout_constraintEnd_toEndOf="@+id/textView"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="18dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="8dp">
 
-    <Button
-        android:id="@+id/btnAI"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/blue"
-        android:text="@string/ai"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/offline_briefing_title"
+                android:textColor="@color/text_primary"
+                android:textSize="27sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="14dp"
+                android:text="@string/offline_briefing_subtitle"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+            <include layout="@layout/category_card_cyber" />
+            <include layout="@layout/category_card_ai" />
+            <include layout="@layout/category_card_software" />
+            <include layout="@layout/category_card_network" />
+            <include layout="@layout/category_card_data" />
+            <include layout="@layout/category_card_ui" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="68dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bottom_navigation_background"
+        android:elevation="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/btnCyber"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/btnCyber"
-        app:layout_constraintTop_toBottomOf="@+id/btnCyber"
-        app:layout_constraintVertical_bias="0.028" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-    <Button
-        android:id="@+id/btnSoftwareEng"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="284dp"
-        android:backgroundTint="@color/pink"
-        android:text="@string/software"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/btnAI"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/btnAI"
-        app:layout_constraintTop_toBottomOf="@+id/btnAI"
-        app:layout_constraintVertical_bias="0.127" />
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="6dp">
 
-    <Button
-        android:id="@+id/btnNetworking"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/red"
-        android:text="@string/network"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/btnSoftwareEng"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/btnSoftwareEng"
-        app:layout_constraintTop_toBottomOf="@+id/btnSoftwareEng"
-        app:layout_constraintVertical_bias="0.027" />
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:alpha="0.78"
+                android:contentDescription="@string/home_icon_description"
+                android:src="@drawable/ic_home" />
 
-    <Button
-        android:id="@+id/btnDataScience"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_blue"
-        android:text="@string/data_science"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/btnNetworking"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/btnNetworking"
-        app:layout_constraintTop_toBottomOf="@+id/btnNetworking"
-        app:layout_constraintVertical_bias="0.046" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/home"
+                android:textColor="@color/navigation_inactive"
+                android:textSize="12sp" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/btnUI"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/purple"
-        android:text="@string/ui"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/btnDataScience"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/btnDataScience"
-        app:layout_constraintTop_toBottomOf="@+id/btnDataScience"
-        app:layout_constraintVertical_bias="0.033" />
+        <LinearLayout
+            android:id="@+id/btnOffline"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="6dp">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/developer"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/btnUI"
-        app:layout_constraintHorizontal_bias="0.591"
-        app:layout_constraintStart_toStartOf="@+id/btnUI"
-        app:layout_constraintTop_toBottomOf="@+id/btnUI"
-        app:layout_constraintVertical_bias="0.829" />
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:contentDescription="@string/offline_icon_description"
+                android:src="@drawable/ic_offline" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/offline"
+                android:textColor="@color/navigation_active"
+                android:textSize="12sp" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/btnSavedPreferences"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/green"
-        android:text="@string/saved_preferences"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
-        app:layout_constraintEnd_toEndOf="@+id/btnUI"
-        app:layout_constraintStart_toStartOf="@+id/btnUI"
-        app:layout_constraintTop_toBottomOf="@+id/btnUI"
-        app:layout_constraintVertical_bias="0.259" />
+        <LinearLayout
+            android:id="@+id/btnSavedPreferences"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="6dp">
 
-    <Button
-        android:id="@+id/btnHelp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Help"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
-        app:layout_constraintEnd_toEndOf="@+id/btnSavedPreferences"
-        app:layout_constraintStart_toStartOf="@+id/btnSavedPreferences"
-        app:layout_constraintTop_toBottomOf="@+id/btnSavedPreferences" />
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:alpha="0.78"
+                android:contentDescription="@string/saved_icon_description"
+                android:src="@drawable/ic_saved" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/saved"
+                android:textColor="@color/navigation_inactive"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

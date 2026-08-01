@@ -11,4 +11,43 @@
     <string name="no_article">You have no saved articles</string>
     <string name="offline_no_article">You have no saved articles in this category</string>
     <string name="developer">Developed by Madubuike, Onyedikachi Nelson</string>
+    <string name="briefing_title">Today’s Briefing</string>
+    <string name="briefing_subtitle">Stay informed. Explore your favorite topics</string>
+    <string name="offline_briefing_title">Offline Briefing</string>
+    <string name="offline_briefing_subtitle">Browse stories cached on this device</string>
+    <string name="cyber_description">Top stories about cyber threats</string>
+    <string name="ai_description">Latest advances and research</string>
+    <string name="software_description">Emerging in software engineering</string>
+    <string name="network_description">Evolving in networking</string>
+    <string name="data_description">Trends in big data and analytics</string>
+    <string name="ui_description">Advancements in UI/UX</string>
+    <string name="source_hacker_news">Hacker News</string>
+    <string name="source_ai">MIT Technology Review</string>
+    <string name="source_software">Toptal</string>
+    <string name="source_network">Cisco</string>
+    <string name="source_data">KDnuggets</string>
+    <string name="source_ui">NN/g UX</string>
+    <string name="home">Home</string>
+    <string name="saved">Saved</string>
+    <string name="home_icon_description">Home</string>
+    <string name="offline_icon_description">Offline mode</string>
+    <string name="saved_icon_description">Saved articles</string>
+    <string name="article_count_zero">0 articles  ›</string>
+    <string name="saved_screen_title">Saved Stories</string>
+    <string name="saved_screen_subtitle">Your hand-picked reads, ready when you are</string>
+    <string name="saved_empty_title">Nothing saved yet</string>
+    <string name="saved_empty_subtitle">Long-press any article to keep it here for later.</string>
+    <string name="saved_article_count_zero">0 saved articles</string>
+    <string name="loading_live_title">Refreshing stories</string>
+    <string name="loading_live_subtitle">Bringing you the latest articles</string>
+    <string name="loading_offline_title">Loading saved stories</string>
+    <string name="loading_offline_subtitle">Reading articles cached on this device</string>
+    <plurals name="saved_article_count">
+        <item quantity="one">%d saved article</item>
+        <item quantity="other">%d saved articles</item>
+    </plurals>
+    <plurals name="article_count">
+        <item quantity="one">%d article  ›</item>
+        <item quantity="other">%d articles  ›</item>
+    </plurals>
 </resources>

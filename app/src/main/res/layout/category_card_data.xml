@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/btnDataScience"
+    android:layout_width="match_parent"
+    android:layout_height="88dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/gradient_data"
+    android:clickable="true"
+    android:elevation="5dp"
+    android:focusable="true"
+    android:padding="11dp">
+
+    <TextView
+        android:id="@+id/dataCardTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/data_science"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/txtDataCount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtDataCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/chip_dark"
+        android:text="@string/article_count_zero"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/data_description"
+        android:textColor="#F2FFFFFF"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dataCardTitle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/chip_light"
+        android:drawableStart="@drawable/ic_source"
+        android:drawablePadding="6dp"
+        android:gravity="center_vertical"
+        android:text="@string/source_data"
+        android:textColor="@color/chip_text"
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
