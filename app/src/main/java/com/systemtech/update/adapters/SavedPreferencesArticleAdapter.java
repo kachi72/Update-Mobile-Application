@@ -4,9 +4,7 @@ import static com.systemtech.update.adapters.ArticleAdapter.WEB_VIEW_URL;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,20 +21,21 @@ import com.systemtech.update.WebPageActivity;
 import com.systemtech.update.database.Article;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SavedPreferencesArticleAdapter extends RecyclerView.Adapter<SavedPreferencesArticleAdapter.ViewHolder>{
 
-    private static final String TAG = "SavedPreferencesArticle";
+    private final ArrayList<Article> articles = new ArrayList<>();
 
-    private ArrayList<Article> articles = new ArrayList<>();
+    private final Context context;
+    private final Runnable onArticlesChanged;
 
-    private Context context;
-
-    public SavedPreferencesArticleAdapter(Context context) {
+    public SavedPreferencesArticleAdapter(Context context, Runnable onArticlesChanged) {
         this.context = context;
+        this.onArticlesChanged = onArticlesChanged;
     }
 
-    public void setArticles(ArrayList<Article> articles) {
+    public void setArticles(List<Article> articles) {
         this.articles.clear();
         this.articles.addAll(new ArrayList<>(articles));
         notifyDataSetChanged();
@@ -51,56 +50,77 @@ public class SavedPreferencesArticleAdapter extends RecyclerView.Adapter<SavedPr
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txtCategory.setText(articles.get(position).getCategory());
-        holder.txtTitle.setText(articles.get(position).getTitle());
-        holder.txtDescription.setText(articles.get(position).getDescription());
-        holder.txtDate.setText(articles.get(position).getDate());
-        String link = articles.get(position).getLink();
+        Article article = articles.get(position);
+        holder.txtCategory.setText(article.getCategory());
+        holder.txtTitle.setText(article.getTitle());
+        holder.txtDescription.setText(article.getDescription());
+        holder.txtDate.setText(article.getDate());
+        holder.articleSurface.setBackgroundResource(getCategoryBackground(article.getCategory()));
 
         // setting an onclick listener for each news post to load the whole post in a new web view
-        holder.parent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), WebPageActivity.class );
-                intent.putExtra(WEB_VIEW_URL, link);
-                v.getContext().startActivity(intent);
+        holder.parent.setOnClickListener(v -> {
+            int adapterPosition = holder.getAdapterPosition();
+            if (adapterPosition == RecyclerView.NO_POSITION) {
+                return;
             }
+
+            Article selectedArticle = articles.get(adapterPosition);
+            Intent intent = new Intent(v.getContext(), WebPageActivity.class );
+            intent.putExtra(WEB_VIEW_URL, selectedArticle.getLink());
+            v.getContext().startActivity(intent);
         });
 
         // setting a long onclick listener for each news article to be able to delete them from savedPreferences
-        holder.parent.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setTitle("Confirm deletion?");
-                builder.setMessage("Are you sure you want to delete this article from Saved Articles?");
-                builder.setCancelable(true);
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Utils.getInstance(view.getContext()).removeFromSharedPreferences(articles.get(position));
-                        articles.remove(position);
-
-                        // testing if my deletion works fine
-//                        ArrayList<Article> size_test = new ArrayList<>();
-//                        size_test = Utils.instance.getUserFav();
-//                        Log.d(TAG, "onClick: inside delete onclick, number of articles inside utils is:" + size_test.size());
-                        notifyItemRemoved(position);
-                        Toast.makeText(context, "Removed this article from Saved Articles", Toast.LENGTH_LONG).show();
-                    }
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                return false;
+        holder.parent.setOnLongClickListener(view -> {
+            int adapterPosition = holder.getAdapterPosition();
+            if (adapterPosition == RecyclerView.NO_POSITION) {
+                return true;
             }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setTitle("Remove saved article?");
+            builder.setMessage("This article will be removed from your saved stories.");
+            builder.setCancelable(true);
+            builder.setPositiveButton("Remove", (dialogInterface, button) -> {
+                int currentPosition = holder.getAdapterPosition();
+                if (currentPosition == RecyclerView.NO_POSITION) {
+                    return;
+                }
+
+                Article selectedArticle = articles.get(currentPosition);
+                Utils.getInstance(view.getContext()).removeFromSharedPreferences(selectedArticle);
+                articles.remove(currentPosition);
+                notifyItemRemoved(currentPosition);
+                onArticlesChanged.run();
+                Toast.makeText(context, "Removed from Saved Stories", Toast.LENGTH_LONG).show();
+            });
+            builder.setNegativeButton("Keep", null);
+            builder.show();
+            return true;
         });
+    }
+
+    private int getCategoryBackground(String category) {
+        if (category == null) {
+            return R.drawable.saved_article_neutral;
+        }
+
+        switch (category) {
+            case "CyberSecurity":
+                return R.drawable.gradient_cyber;
+            case "AI/ML":
+                return R.drawable.gradient_ai;
+            case "Software Engineering":
+                return R.drawable.gradient_software;
+            case "Networking":
+                return R.drawable.gradient_network;
+            case "Data Science":
+                return R.drawable.gradient_data;
+            case "UI/UX":
+                return R.drawable.gradient_ui;
+            default:
+                return R.drawable.saved_article_neutral;
+        }
     }
 
     @Override
@@ -111,6 +131,7 @@ public class SavedPreferencesArticleAdapter extends RecyclerView.Adapter<SavedPr
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         private CardView parent;
+        private View articleSurface;
         private TextView txtTitle, txtDescription, txtDate, txtCategory;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -119,6 +140,7 @@ public class SavedPreferencesArticleAdapter extends RecyclerView.Adapter<SavedPr
             txtCategory = itemView.findViewById(R.id.category);
             txtDate = itemView.findViewById(R.id.date);
             parent = itemView.findViewById(R.id.parent);
+            articleSurface = itemView.findViewById(R.id.articleSurface);
         }
     }
 }
