@@ -8,12 +8,10 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -25,11 +23,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.systemtech.update.database.AppDatabase;
 import com.systemtech.update.database.Article;
+import com.systemtech.update.helpers.AppExecutors;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private Button cyber, ai, softwareEng, network, dataScience, ui, offline, savedPreferences, help;
+    private View cyber, ai, softwareEng, network, dataScience, ui, offline, savedPreferences;
+    private TextView cyberCount, aiCount, softwareCount, networkCount, dataCount, uiCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
         setOnClickButtons();
+        observeCachedArticleCounts();
 
         // initialize savedPreferences
         Utils.getInstance(this);
@@ -121,12 +121,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        help.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showAlertDialog();
-            }
-        });
     }
 
 
@@ -196,7 +190,33 @@ public class MainActivity extends AppCompatActivity {
         ui = findViewById(R.id.btnUI);
         offline = findViewById(R.id.btnOffline);
         savedPreferences = findViewById(R.id.btnSavedPreferences);
-        help = findViewById(R.id.btnHelp);
+        cyberCount = findViewById(R.id.txtCyberCount);
+        aiCount = findViewById(R.id.txtAiCount);
+        softwareCount = findViewById(R.id.txtSoftwareCount);
+        networkCount = findViewById(R.id.txtNetworkCount);
+        dataCount = findViewById(R.id.txtDataCount);
+        uiCount = findViewById(R.id.txtUiCount);
+    }
+
+    private void observeCachedArticleCounts() {
+        AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+        db.articleDao().getAllArticles("CyberSecurity").observe(this,
+                articles -> setArticleCount(cyberCount, articles));
+        db.articleDao().getAllArticles("AI/ML").observe(this,
+                articles -> setArticleCount(aiCount, articles));
+        db.articleDao().getAllArticles("Software Engineering").observe(this,
+                articles -> setArticleCount(softwareCount, articles));
+        db.articleDao().getAllArticles("Networking").observe(this,
+                articles -> setArticleCount(networkCount, articles));
+        db.articleDao().getAllArticles("Data Science").observe(this,
+                articles -> setArticleCount(dataCount, articles));
+        db.articleDao().getAllArticles("UI/UX").observe(this,
+                articles -> setArticleCount(uiCount, articles));
+    }
+
+    private void setArticleCount(TextView countView, List<Article> articles) {
+        int count = articles == null ? 0 : articles.size();
+        countView.setText(getResources().getQuantityString(R.plurals.article_count, count, count));
     }
 
     // TODO: 23/04/2025 add an offline mode //
@@ -245,39 +265,28 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "offline: inside offline method");
 
-        // run database operations in the background
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        AppExecutors executors = AppExecutors.getInstance();
+        executors.diskIO().execute(() -> {
+            Log.d(TAG, "offline: reading cached articles");
+            AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+            List<Article> articles = db.articleDao().getAllArticlesSync();
 
-                Log.d(TAG, "run: about to run database operation");
-                AppDatabase dp = AppDatabase.getInstance(getApplicationContext());
-                List<Article> articles = new ArrayList<>();
-                articles = dp.articleDao().getAllArticlesSync();
-
-                Log.d(TAG, "run: done w database operation. No of articles: " + articles.size());
-                if (articles.isEmpty()){
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d(TAG, "run: back on main thread");
-                            Toast.makeText(getApplicationContext(), "You need to connect to the Internet first, no saved articles", Toast.LENGTH_LONG).show();
-//                            showInternetDialog(MainActivity.this);
-                        }
-                    });
+            executors.mainThread().execute(() -> {
+                if (isFinishing() || isDestroyed()) {
+                    return;
                 }
-                else{
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                                Intent intent = new Intent(MainActivity.this, OfflineActivity.class);
-                                startActivity(intent);
-                        }
-                    });
 
+                if (articles.isEmpty()) {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "You need to connect to the Internet first, no saved articles",
+                            Toast.LENGTH_LONG
+                    ).show();
+                } else {
+                    startActivity(new Intent(MainActivity.this, OfflineActivity.class));
                 }
-            }
-        }).start();
+            });
+        });
 
     }
 
@@ -328,17 +337,17 @@ public class MainActivity extends AppCompatActivity {
      * check if the device is connected to the internet in background
      */
     private void checkForInternetConnectivity(){
-        new Thread(() -> {
+        AppExecutors executors = AppExecutors.getInstance();
+        executors.networkIO().execute(() -> {
             boolean isConnected = isConnectedToInternet(MainActivity.this);
             boolean hasInternet = hasRealInternetAccess();
 
-            new Handler(Looper.getMainLooper()).post(() -> {
-                if (!isConnected || !hasInternet) {
+            executors.mainThread().execute(() -> {
+                if (!isFinishing() && !isDestroyed() && (!isConnected || !hasInternet)) {
                     showInternetDialog(MainActivity.this);
                 }
             });
-
-        }).start();
+        });
     }
 
 }

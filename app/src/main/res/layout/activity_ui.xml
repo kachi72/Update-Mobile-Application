@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ui_ux_background"
+    android:background="@drawable/screen_gradient_ui"
     tools:context=".UiActivity">
 
 
@@ -18,7 +18,7 @@
         android:layout_margin="10dp"
         android:textSize="15dp"
         android:textStyle="bold"
-        android:textColor="@color/purple"
+        android:textColor="@color/white"
         />
 
     <androidx.recyclerview.widget.RecyclerView
