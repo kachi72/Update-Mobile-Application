@@ -1,5 +1,6 @@
 package com.systemtech.update;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -21,7 +22,9 @@ public class SavedPreferencesActivity extends AppCompatActivity {
 
     private RecyclerView recycler;
 
-    private TextView txtNoArticle;
+    private TextView txtSavedCount;
+
+    private View emptyState, homeNavigation, offlineNavigation;
 
     private ArrayList<Article> articles;
 
@@ -39,16 +42,27 @@ public class SavedPreferencesActivity extends AppCompatActivity {
         });
 
         articles = new ArrayList<>();
-        txtNoArticle = findViewById(R.id.txtNoArticle);
+        emptyState = findViewById(R.id.emptyState);
+        txtSavedCount = findViewById(R.id.txtSavedCount);
+        homeNavigation = findViewById(R.id.navHome);
+        offlineNavigation = findViewById(R.id.navOffline);
 
         // load the articles from savedPreferences
         articles = Utils.getInstance(this).getUserFav();
 
-        adapter = new SavedPreferencesArticleAdapter(this);
+        adapter = new SavedPreferencesArticleAdapter(this, this::handleEmptyList);
         recycler = findViewById(R.id.recycler);
 
-        handleEmptyList();
+        homeNavigation.setOnClickListener(view -> {
+            Intent intent = new Intent(SavedPreferencesActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        });
+        offlineNavigation.setOnClickListener(view ->
+                startActivity(new Intent(SavedPreferencesActivity.this, OfflineActivity.class)));
+
         updateRecycler();
+        handleEmptyList();
     }
 
     /**
@@ -58,20 +72,23 @@ public class SavedPreferencesActivity extends AppCompatActivity {
         recycler.setAdapter(adapter);
         recycler.setLayoutManager(new LinearLayoutManager(this));
         adapter.setArticles(articles);
-        adapter.notifyDataSetChanged();
     }
 
     /**
      *  display a text saying no saved articles if there are no saved articles of the user
      */
     private void handleEmptyList() {
-        if (articles.isEmpty()){
+        int savedCount = adapter == null ? articles.size() : adapter.getItemCount();
+        txtSavedCount.setText(getResources().getQuantityString(
+                R.plurals.saved_article_count, savedCount, savedCount));
+
+        if (savedCount == 0){
             recycler.setVisibility(View.GONE);
-            txtNoArticle.setVisibility(View.VISIBLE);
+            emptyState.setVisibility(View.VISIBLE);
         }
         else{
             recycler.setVisibility(View.VISIBLE);
-            txtNoArticle.setVisibility(View.GONE);
+            emptyState.setVisibility(View.GONE);
         }
     }
 }

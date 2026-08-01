@@ -1,34 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="20dp"
-    android:id="@+id/parent">
+    android:id="@+id/parent"
+    android:layout_width="270dp"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="#F2FFFFFF"
+    app:cardCornerRadius="22dp"
+    app:cardElevation="8dp">
 
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:id="@+id/loadingIcon"
-        app:lottie_rawRes="@raw/loading_anim"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        android:visibility="visible"
-        android:layout_margin="10dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/loadingIcon"
-        android:layout_marginTop="20dp"
-        android:id="@+id/txtLoading"
-        android:text="Fetching live news!!!"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:background="@color/black"
-        android:layout_margin="10dp"
-        android:layout_centerHorizontal="true"/>
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingTop="26dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp">
 
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/loadingIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminate="true"
+            app:indicatorColor="@color/text_primary"
+            app:indicatorSize="46dp"
+            app:trackColor="#26302F35"
+            app:trackThickness="4dp" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/txtLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/loading_live_title"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="@string/loading_live_subtitle"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
