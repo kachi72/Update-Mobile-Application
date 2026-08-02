@@ -9,7 +9,10 @@
     android:clickable="true"
     android:elevation="5dp"
     android:focusable="true"
-    android:padding="11dp">
+    android:paddingStart="11dp"
+    android:paddingTop="11dp"
+    android:paddingEnd="11dp"
+    android:paddingBottom="8dp">
 
     <TextView
         android:id="@+id/cyberCardTitle"
@@ -49,7 +52,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/chip_light"
         android:drawableStart="@drawable/ic_source_hacker_news"
-        android:drawablePadding="6dp"
+        android:drawablePadding="8dp"
         android:gravity="center_vertical"
         android:text="@string/source_hacker_news"
         android:textColor="@color/chip_text"
