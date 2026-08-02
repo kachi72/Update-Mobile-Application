@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.systemtech.update.R;
 import com.systemtech.update.Utils;
+import com.systemtech.update.helpers.BrandedToast;
 import com.systemtech.update.WebPageActivity;
 import com.systemtech.update.database.Article;
 
@@ -92,7 +93,7 @@ public class SavedPreferencesArticleAdapter extends RecyclerView.Adapter<SavedPr
                 articles.remove(currentPosition);
                 notifyItemRemoved(currentPosition);
                 onArticlesChanged.run();
-                Toast.makeText(context, "Removed from Saved Stories", Toast.LENGTH_LONG).show();
+                BrandedToast.show(context, "Removed from Saved Stories", Toast.LENGTH_LONG);
             });
             builder.setNegativeButton("Keep", null);
             builder.show();

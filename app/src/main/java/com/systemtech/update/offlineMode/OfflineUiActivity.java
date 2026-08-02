@@ -17,6 +17,7 @@ import com.systemtech.update.R;
 import com.systemtech.update.adapters.OfflineModeArticleAdapter;
 import com.systemtech.update.database.AppDatabase;
 import com.systemtech.update.database.Article;
+import com.systemtech.update.helpers.BrandedToast;
 import com.systemtech.update.helpers.AppExecutors;
 
 import java.util.ArrayList;
@@ -72,7 +73,11 @@ public class OfflineUiActivity extends AppCompatActivity {
         articles = cachedArticles;
         if (articles.isEmpty()) {
             hideLoadingIcon();
-            Toast.makeText(this, "There are no saved posts in the database for this category", Toast.LENGTH_LONG).show();
+            BrandedToast.show(
+                    this,
+                    "There are no saved posts in the database for this category",
+                    Toast.LENGTH_LONG
+            );
             showNoArticleText();
         } else {
             updateRecycler(articles);

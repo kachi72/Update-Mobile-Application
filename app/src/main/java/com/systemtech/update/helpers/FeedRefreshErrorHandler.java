@@ -50,7 +50,7 @@ public final class FeedRefreshErrorHandler {
             return;
         }
 
-        Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
+        BrandedToast.show(activity, message, Toast.LENGTH_LONG);
         activity.finish();
     }
 }

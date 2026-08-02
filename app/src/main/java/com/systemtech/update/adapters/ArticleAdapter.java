@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.systemtech.update.R;
 import com.systemtech.update.Utils;
+import com.systemtech.update.helpers.BrandedToast;
 import com.systemtech.update.WebPageActivity;
 import com.systemtech.update.database.Article;
 
@@ -78,7 +79,11 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     .setMessage("Are you sure you want to add this article to Saved Articles?")
                     .setPositiveButton("Yes", (dialog, button) -> {
                         Utils.getInstance(context).addToSharedPreferences(selectedArticle);
-                        Toast.makeText(context, "Added this article to your saved articles", Toast.LENGTH_LONG).show();
+                        BrandedToast.show(
+                                context,
+                                "Added this article to your saved articles",
+                                Toast.LENGTH_LONG
+                        );
                     })
                     .setNegativeButton("No", null)
                     .setCancelable(true)

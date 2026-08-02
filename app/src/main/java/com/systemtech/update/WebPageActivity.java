@@ -16,6 +16,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.systemtech.update.helpers.AppExecutors;
+import com.systemtech.update.helpers.BrandedToast;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -93,8 +94,11 @@ public class WebPageActivity extends AppCompatActivity {
         Log.d(TAG, "showNoInternetMessage: inside method to show message for no internet");
         AppExecutors.getInstance().mainThread().execute(() -> {
             if (!isFinishing() && !isDestroyed()) {
-                Toast.makeText(WebPageActivity.this, "No internet connection available. Please check your network settings.",
-                        Toast.LENGTH_LONG).show();
+                BrandedToast.show(
+                        WebPageActivity.this,
+                        "No internet connection available. Please check your network settings.",
+                        Toast.LENGTH_LONG
+                );
 
                 finish();
             }

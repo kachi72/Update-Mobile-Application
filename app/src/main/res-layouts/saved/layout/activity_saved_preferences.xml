@@ -178,9 +178,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:maxLines="1"
                 android:text="@string/offline"
+                android:textAlignment="center"
                 android:textColor="@color/navigation_inactive"
-                android:textSize="12sp" />
+                android:textSize="11sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -207,7 +210,7 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-+        <LinearLayout
+        <LinearLayout
             android:id="@+id/navHelp"
             android:layout_width="0dp"
             android:layout_height="match_parent"

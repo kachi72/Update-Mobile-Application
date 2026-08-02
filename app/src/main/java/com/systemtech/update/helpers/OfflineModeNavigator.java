@@ -29,11 +29,11 @@ public final class OfflineModeNavigator {
                 }
 
                 if (!hasCachedArticles) {
-                    Toast.makeText(
+                    BrandedToast.show(
                             activity,
                             R.string.offline_mode_requires_articles,
                             Toast.LENGTH_LONG
-                    ).show();
+                    );
                     return;
                 }
 

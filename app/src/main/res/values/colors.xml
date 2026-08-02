@@ -24,6 +24,9 @@
     <color name="saved_surface_start">#F8F5F9</color>
     <color name="saved_surface_end">#ECE6F1</color>
     <color name="saved_empty_icon">#716B7E</color>
+    <color name="splash_glow_start">#E3F8F4</color>
+    <color name="splash_glow_end">#F4F1F6</color>
+    <color name="toast_surface">#F052515C</color>
     <color name="opay_green">#00FDB1</color>
     <color name="light_blue">#4B95EC</color>
     <color name="red">#FD0027</color>

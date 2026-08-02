@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.systemtech.update.R;
 import com.systemtech.update.Utils;
+import com.systemtech.update.helpers.BrandedToast;
 import com.systemtech.update.database.Article;
 
 import java.util.ArrayList;
@@ -51,8 +52,11 @@ public class OfflineModeArticleAdapter extends RecyclerView.Adapter<OfflineModeA
         holder.txtDate.setText(article.getDate());
 
         // an onclick listener in the offline mode to let users know they cannot view the full article in offline mode
-        holder.parent.setOnClickListener(view ->
-                Toast.makeText(context, "You cannot view full articles in Offline Mode", Toast.LENGTH_LONG).show());
+        holder.parent.setOnClickListener(view -> BrandedToast.show(
+                context,
+                "You cannot view full articles in Offline Mode",
+                Toast.LENGTH_LONG
+        ));
 
         // an onclick listener to add articles to saved preferences
         holder.parent.setOnLongClickListener(view -> {
@@ -67,7 +71,11 @@ public class OfflineModeArticleAdapter extends RecyclerView.Adapter<OfflineModeA
                     .setMessage("Are you sure you want to add this article to Saved Articles?")
                     .setPositiveButton("Yes", (dialog, button) -> {
                         Utils.getInstance(context).addToSharedPreferences(selectedArticle);
-                        Toast.makeText(context, "Added this article to your saved articles", Toast.LENGTH_LONG).show();
+                        BrandedToast.show(
+                                context,
+                                "Added this article to your saved articles",
+                                Toast.LENGTH_LONG
+                        );
                     })
                     .setNegativeButton("No", null)
                     .setCancelable(true)
