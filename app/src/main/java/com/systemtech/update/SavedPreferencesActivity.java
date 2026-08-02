@@ -57,7 +57,7 @@ public class SavedPreferencesActivity extends AppCompatActivity {
 
         homeNavigation.setOnClickListener(view -> {
             Intent intent = new Intent(SavedPreferencesActivity.this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
         });
         offlineNavigation.setOnClickListener(view ->
