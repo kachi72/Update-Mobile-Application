@@ -44,6 +44,8 @@ dependencies {
     implementation(libs.cardview)
     // gson dependency from google to convert any data type to json n back
     implementation (libs.gson)
+    // shared HTTP client for RSS feed downloads
+    implementation(libs.okhttp)
     // dependencies for instrument testing
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.junit.v115)
@@ -81,6 +83,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
+    testImplementation(libs.mockwebserver)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }
