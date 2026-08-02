@@ -17,11 +17,19 @@ These documentation previews reflect the current XML layouts, colors, gradients,
 
 | Home | Offline mode | Saved stories |
 | --- | --- | --- |
-| ![Update home screen](docs/screenshots/home-screen.png) | ![Update offline mode screen](docs/screenshots/offline-screen.png) | ![Update saved stories screen](docs/screenshots/saved-screen.png) |
+| ![Update home screen with colored category source logos](docs/screenshots/home-screen-current.png) | ![Update offline mode screen](docs/screenshots/offline-screen.png) | ![Update saved stories screen](docs/screenshots/saved-screen.png) |
 
 | Cyber Security | AI / ML | Data Science |
 | --- | --- | --- |
 | ![Cyber Security articles](docs/screenshots/cyber-screen.png) | ![AI and machine learning articles](docs/screenshots/ai-screen.png) | ![Data Science articles](docs/screenshots/data-screen.png) |
+
+### Distinct category source marks
+
+Every category card on the Home menu has its own colored publisher mark: Hacker News for Cyber Security, MIT Technology Review for AI/ML, Toptal for Software Engineering, Cisco for Networking, KDnuggets for Data Science, and NN/g for UI/UX.
+
+<p align="center">
+  <img src="docs/screenshots/category-logos-current.png" alt="Update Home menu showing six distinct colored category source logos" width="380">
+</p>
 
 ## Features
 
