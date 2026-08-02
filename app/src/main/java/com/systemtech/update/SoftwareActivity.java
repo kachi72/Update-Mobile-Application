@@ -22,9 +22,10 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import com.systemtech.update.adapters.ArticleAdapter;
-import com.systemtech.update.backgroundTasks.SoftwareBackgroundTask;
+import com.systemtech.update.backgroundTasks.ArticleRefreshWorker;
 import com.systemtech.update.database.AppDatabase;
 import com.systemtech.update.database.Article;
+import com.systemtech.update.feeds.FeedSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,10 +71,10 @@ public class SoftwareActivity extends AppCompatActivity {
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build();
 
-        OneTimeWorkRequest fetchDataRequest = new OneTimeWorkRequest.Builder(SoftwareBackgroundTask.class)
-                .setConstraints(constraint)
-                .addTag("fetchData")
-                .build();
+        OneTimeWorkRequest fetchDataRequest = ArticleRefreshWorker.createRequest(
+                FeedSource.SOFTWARE_ENGINEERING,
+                constraint
+        );
 
         WorkManager.getInstance(this).enqueue(fetchDataRequest);
 
