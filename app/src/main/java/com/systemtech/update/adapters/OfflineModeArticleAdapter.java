@@ -2,7 +2,6 @@ package com.systemtech.update.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,7 @@ import java.util.List;
 
 public class OfflineModeArticleAdapter extends RecyclerView.Adapter<OfflineModeArticleAdapter.ViewHolder>{
 
-    private ArrayList<Article> articles = new ArrayList<>();
+    private final ArrayList<Article> articles = new ArrayList<>();
 
 
     public void setArticles(List<Article> articles) {
@@ -31,7 +30,7 @@ public class OfflineModeArticleAdapter extends RecyclerView.Adapter<OfflineModeA
         notifyDataSetChanged();
     }
 
-    private Context context;
+    private final Context context;
 
     public OfflineModeArticleAdapter(Context context) {
         this.context = context;
@@ -46,44 +45,34 @@ public class OfflineModeArticleAdapter extends RecyclerView.Adapter<OfflineModeA
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txtTitle.setText(articles.get(position).getTitle());
-        holder.txtDescription.setText(articles.get(position).getDescription());
-        holder.txtDate.setText(articles.get(position).getDate());
+        Article article = articles.get(position);
+        holder.txtTitle.setText(article.getTitle());
+        holder.txtDescription.setText(article.getDescription());
+        holder.txtDate.setText(article.getDate());
 
         // an onclick listener in the offline mode to let users know they cannot view the full article in offline mode
-        holder.parent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context, "You cannot view full articles in Offline Mode", Toast.LENGTH_LONG).show();
-            }
-        });
+        holder.parent.setOnClickListener(view ->
+                Toast.makeText(context, "You cannot view full articles in Offline Mode", Toast.LENGTH_LONG).show());
 
         // an onclick listener to add articles to saved preferences
-        holder.parent.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setTitle("Confirm Save?");
-                builder.setMessage("Are you sure you want to add this article to Saved Articles?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Utils.getInstance(context).addToSharedPreferences(articles.get(position));
-                        Toast.makeText(context, "Added this article to your saved articles", Toast.LENGTH_LONG).show();
-                    }
-                });
-                builder.setCancelable(true);
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // nothing in this block to dismiss alert dialog when clicked
-                    }
-                });
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                return false;
+        holder.parent.setOnLongClickListener(view -> {
+            int adapterPosition = holder.getAdapterPosition();
+            if (adapterPosition == RecyclerView.NO_POSITION) {
+                return true;
             }
+
+            Article selectedArticle = articles.get(adapterPosition);
+            new AlertDialog.Builder(view.getContext())
+                    .setTitle("Confirm Save?")
+                    .setMessage("Are you sure you want to add this article to Saved Articles?")
+                    .setPositiveButton("Yes", (dialog, button) -> {
+                        Utils.getInstance(context).addToSharedPreferences(selectedArticle);
+                        Toast.makeText(context, "Added this article to your saved articles", Toast.LENGTH_LONG).show();
+                    })
+                    .setNegativeButton("No", null)
+                    .setCancelable(true)
+                    .show();
+            return true;
         });
     }
 
@@ -92,7 +81,7 @@ public class OfflineModeArticleAdapter extends RecyclerView.Adapter<OfflineModeA
         return articles.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txtTitle, txtDescription, txtDate;
         private CardView parent;
