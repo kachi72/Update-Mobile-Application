@@ -23,14 +23,6 @@ These documentation previews reflect the current XML layouts, colors, gradients,
 | --- | --- | --- |
 | <img src="docs/screenshots/cyber-screen.png" alt="Cyber Security articles" width="240"> | <img src="docs/screenshots/ai-screen.png" alt="AI and machine learning articles" width="240"> | <img src="docs/screenshots/data-screen.png" alt="Data Science articles" width="240"> |
 
-### Distinct category source marks
-
-Every category card on the Home menu has its own colored publisher mark: Hacker News for Cyber Security, MIT Technology Review for AI/ML, Toptal for Software Engineering, Cisco for Networking, KDnuggets for Data Science, and NN/g for UI/UX.
-
-<p align="center">
-  <img src="docs/screenshots/category-logos-current.png" alt="Update Home menu showing six distinct colored category source logos" width="380">
-</p>
-
 ## Features
 
 - Browse current technology news across six color-coded categories.
