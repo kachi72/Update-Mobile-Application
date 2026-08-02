@@ -1,4 +1,4 @@
-# Update
+<h1><img src="app/src/main/res/drawable-nodpi/app_logo_modern.png" alt="Update app logo" width="48" height="48" align="center"> Update</h1>
 
 Update is an Android technology-news reader covering six domains:
 
@@ -13,7 +13,7 @@ The app downloads articles from public RSS feeds, caches them in Room for offlin
 
 ## UI preview
 
-These documentation previews reflect the current XML layouts, colors, gradients, navigation states, and screen content hierarchy.
+These documentation previews reflect the current XML layouts, colors, gradients, navigation states, source branding, and screen content hierarchy.
 
 | Home | Offline mode | Saved stories |
 | --- | --- | --- |
@@ -26,6 +26,7 @@ These documentation previews reflect the current XML layouts, colors, gradients,
 ## Features
 
 - Browse current technology news across six color-coded categories.
+- Recognize each category's publisher through its own colored source mark.
 - See cached article counts directly on the Home and Offline category cards.
 - Read full articles in an in-app WebView.
 - Cache fetched articles locally with Room.
@@ -33,9 +34,12 @@ These documentation previews reflect the current XML layouts, colors, gradients,
 - Long-press an online or offline article to save it.
 - Long-press a saved article to remove it.
 - See an empty state and live saved-item count on the Saved Stories screen.
-- Move between Home, Offline mode, and Saved using a persistent bottom navigation bar.
+- Move between Home, Offline mode, Saved, and Help using a persistent bottom navigation bar.
 - Identify the current navigation destination through active text and icon styling.
-- Detect unavailable internet access and offer Wi-Fi settings, retry, or offline mode.
+- Restrict Offline mode consistently until at least one article has been cached.
+- Distinguish unavailable internet access from slow feed responses and timeouts.
+- Offer Wi-Fi settings, retry, or Offline mode when the app launches without internet access.
+- Show the modern Update identity across the launcher, splash screen, and branded in-app messages.
 - Display compact Material loading indicators while network or database work completes.
 
 ## Implemented changes
@@ -43,10 +47,22 @@ These documentation previews reflect the current XML layouts, colors, gradients,
 ### Home and category redesign
 
 - Replaced the original home layout with a briefing-style screen.
-- Added six reusable category cards with descriptions, source chips, cached counts, and individual gradients.
+- Added six reusable category cards with descriptions, colored publisher marks, source chips, cached counts, and individual gradients.
+- Refined the spacing between category descriptions, source logos, and source labels.
 - Added a matching Offline Briefing screen.
 - Applied each category card gradient to its online and offline article screens.
-- Added persistent Home, Offline mode, and Saved navigation with an active destination state.
+- Added persistent Home, Offline mode, Saved, and Help navigation with an active destination state.
+
+### Branding and interaction polish
+
+- Introduced a modern globe-and-signal logo for the launcher and round launcher icon.
+- Preserved the original `app_icon2.png` asset while switching active UI references to the new branding.
+- Added density-specific launcher assets from mdpi through xxxhdpi.
+- Added a five-second launch screen with the Update logo, developer credit, and visible countdown timer.
+- Reused the modern logo in branded Toast messages instead of showing Android's generic icon.
+- Added rounded clipping so the logo renders cleanly on the launch screen and compact Toast surface.
+- Restored Help as the final bottom-navigation action and reused the shared Help dialog across primary screens.
+- Kept the Offline mode label centered and on one line throughout the bottom navigation.
 
 ### Saved Stories and loading states
 
@@ -54,6 +70,7 @@ These documentation previews reflect the current XML layouts, colors, gradients,
 - Added category-aware gradients to saved article cards.
 - Updated deletion handling so counts and the empty state respond immediately.
 - Replaced the rendered Lottie loaders with formal Material circular progress indicators.
+- Added app-branded feedback messages for saves, removals, offline restrictions, empty categories, and feed failures.
 
 ### Centralized application executors
 
@@ -194,6 +211,7 @@ app/src/
 |   |-- AndroidManifest.xml
 |   |-- java/com/systemtech/update/
 |   |   |-- MainActivity.java              # Home briefing and connectivity handling
+|   |   |-- SplashActivity.java            # Branded five-second launch countdown
 |   |   |-- *Activity.java                 # Online category screens
 |   |   |-- OfflineActivity.java           # Offline briefing
 |   |   |-- SavedPreferencesActivity.java  # Saved Stories screen
@@ -205,18 +223,23 @@ app/src/
 |   |   |-- database/                      # Room entity, DAO, and database
 |   |   |-- feeds/                         # FeedSource, client, parser, and repository
 |   |   |-- helpers/
-|   |   |   `-- AppExecutors.java          # Disk, network, and main-thread executors
+|   |   |   |-- AppExecutors.java          # Disk, network, and main-thread executors
+|   |   |   |-- BrandedToast.java          # App-branded feedback messages
+|   |   |   |-- NetworkStatus.java         # Validated connectivity checks
+|   |   |   `-- OfflineModeNavigator.java  # Shared cached-article access guard
 |   |   `-- offlineMode/                   # Offline category screens
 |   |-- res/
-|   |   |-- drawable/                      # Category gradients, icons, and surfaces
+|   |   |-- drawable/                      # Gradients, clipping, icons, and surfaces
+|   |   |-- drawable-nodpi/                # High-resolution modern app logo
+|   |   |-- mipmap-*/                      # Density-specific launcher icons
 |   |   `-- values/                        # Strings, colors, fonts, and themes
 |   `-- res-layouts/                       # Grouped layout resource roots
 |       |-- home/layout/                   # Home briefing
 |       |-- categories/layout/             # Six online category screens
 |       |-- offline/layout/                # Offline briefing and category screens
 |       |-- saved/layout/                  # Saved Stories screen
-|       |-- cards/layout/                  # Category cards and article rows
-|       |-- loading/layout/                # Online and offline loading includes
+|       |-- cards/layout/                  # Cards, article rows, and branded Toast
+|       |-- loading/layout/                # Loading includes and branded launch screen
 |       `-- web/layout/                    # In-app WebView screen
 |-- test/                                  # Parser and MockWebServer tests
 `-- androidTest/                           # Android worker-input tests
