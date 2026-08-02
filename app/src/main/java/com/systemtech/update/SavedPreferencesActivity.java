@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.systemtech.update.adapters.SavedPreferencesArticleAdapter;
 import com.systemtech.update.database.Article;
+import com.systemtech.update.helpers.OfflineModeNavigator;
 
 import java.util.ArrayList;
 
@@ -59,7 +60,7 @@ public class SavedPreferencesActivity extends AppCompatActivity {
             startActivity(intent);
         });
         offlineNavigation.setOnClickListener(view ->
-                startActivity(new Intent(SavedPreferencesActivity.this, OfflineActivity.class)));
+                OfflineModeNavigator.open(SavedPreferencesActivity.this));
 
         updateRecycler();
         handleEmptyList();

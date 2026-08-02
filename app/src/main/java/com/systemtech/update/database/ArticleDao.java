@@ -27,6 +27,9 @@ public interface ArticleDao {
     @Query("SELECT * FROM articles")
    List<Article> getAllArticlesSync();
 
+    @Query("SELECT EXISTS(SELECT 1 FROM articles LIMIT 1)")
+    boolean hasAnyArticles();
+
     @Query("DELETE FROM articles WHERE category = :category")
     void deleteArticlesByCategory(String category);
 

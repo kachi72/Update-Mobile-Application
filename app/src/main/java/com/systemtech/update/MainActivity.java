@@ -12,7 +12,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -24,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.systemtech.update.database.AppDatabase;
 import com.systemtech.update.database.Article;
 import com.systemtech.update.helpers.AppExecutors;
+import com.systemtech.update.helpers.OfflineModeNavigator;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -262,32 +262,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void offline(){
-
-        Log.d(TAG, "offline: inside offline method");
-
-        AppExecutors executors = AppExecutors.getInstance();
-        executors.diskIO().execute(() -> {
-            Log.d(TAG, "offline: reading cached articles");
-            AppDatabase db = AppDatabase.getInstance(getApplicationContext());
-            List<Article> articles = db.articleDao().getAllArticlesSync();
-
-            executors.mainThread().execute(() -> {
-                if (isFinishing() || isDestroyed()) {
-                    return;
-                }
-
-                if (articles.isEmpty()) {
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "You need to connect to the Internet first, no saved articles",
-                            Toast.LENGTH_LONG
-                    ).show();
-                } else {
-                    startActivity(new Intent(MainActivity.this, OfflineActivity.class));
-                }
-            });
-        });
-
+        OfflineModeNavigator.open(this);
     }
 
     public void savedPreferences(){
