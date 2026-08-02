@@ -17,11 +17,11 @@ These documentation previews reflect the current XML layouts, colors, gradients,
 
 | Home | Offline mode | Saved stories |
 | --- | --- | --- |
-| ![Update home screen with colored category source logos](docs/screenshots/home-screen-current.png) | ![Update offline mode screen](docs/screenshots/offline-screen.png) | ![Update saved stories screen](docs/screenshots/saved-screen.png) |
+| <img src="docs/screenshots/home-screen-current.png" alt="Update home screen with colored category source logos" width="240"> | <img src="docs/screenshots/offline-screen.png" alt="Update offline mode screen" width="240"> | <img src="docs/screenshots/saved-screen.png" alt="Update saved stories screen" width="240"> |
 
 | Cyber Security | AI / ML | Data Science |
 | --- | --- | --- |
-| ![Cyber Security articles](docs/screenshots/cyber-screen.png) | ![AI and machine learning articles](docs/screenshots/ai-screen.png) | ![Data Science articles](docs/screenshots/data-screen.png) |
+| <img src="docs/screenshots/cyber-screen.png" alt="Cyber Security articles" width="240"> | <img src="docs/screenshots/ai-screen.png" alt="AI and machine learning articles" width="240"> | <img src="docs/screenshots/data-screen.png" alt="Data Science articles" width="240"> |
 
 ### Distinct category source marks
 
