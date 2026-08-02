@@ -9,7 +9,7 @@
 
     <style name="Theme.Update.Splash" parent="Theme.Update">
         <item name="android:windowSplashScreenBackground">@color/screen_background</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/app_icon2</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/app_icon_modern</item>
         <item name="android:windowSplashScreenIconBackgroundColor">@color/screen_background</item>
         <item name="android:statusBarColor">@color/screen_background</item>
         <item name="android:navigationBarColor">@color/screen_background</item>

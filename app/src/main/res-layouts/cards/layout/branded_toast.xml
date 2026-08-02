@@ -9,9 +9,11 @@
     <ImageView
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:background="@drawable/logo_toast_clip_background"
+        android:clipToOutline="true"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@mipmap/app_icon2" />
+        android:src="@mipmap/app_icon_modern" />
 
     <TextView
         android:id="@+id/txtToastMessage"

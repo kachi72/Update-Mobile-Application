@@ -39,9 +39,11 @@
         <ImageView
             android:layout_width="180dp"
             android:layout_height="180dp"
+            android:background="@drawable/logo_splash_clip_background"
+            android:clipToOutline="true"
             android:contentDescription="@string/app_name"
             android:scaleType="fitCenter"
-            android:src="@mipmap/app_icon2" />
+            android:src="@drawable/app_logo_modern" />
 
         <TextView
             android:layout_width="wrap_content"
