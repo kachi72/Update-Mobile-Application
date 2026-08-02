@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -33,7 +32,7 @@ import java.util.List;
 public class CyberActivity extends AppCompatActivity {
     private static final String TAG = "CyberActivity";
 
-    private RelativeLayout child;
+    private View child;
 
     private RecyclerView recycler;
     private ArrayList<Article> articles;

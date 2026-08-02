@@ -2,7 +2,6 @@ package com.systemtech.update.offlineMode;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +25,7 @@ import java.util.List;
 
 public class OfflineCyberActivity extends AppCompatActivity {
 
-    private RelativeLayout child;
+    private View child;
 
     private RecyclerView recycler;
     private List<Article> articles;

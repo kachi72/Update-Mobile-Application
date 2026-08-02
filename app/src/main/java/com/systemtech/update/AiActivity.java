@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -36,7 +35,7 @@ public class AiActivity extends AppCompatActivity {
 
     RecyclerView recycler;
     ArticleAdapter adapter;
-    RelativeLayout child;
+    View child;
     ArrayList<Article> articles;
 
 
