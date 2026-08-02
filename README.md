@@ -1,6 +1,6 @@
 # Update
 
-Update is an Android news reader for keeping up with developments across six technology domains:
+Update is an Android technology-news reader covering six domains:
 
 - Cyber Security
 - Artificial Intelligence and Machine Learning
@@ -9,18 +9,82 @@ Update is an Android news reader for keeping up with developments across six tec
 - Data Science and Analytics
 - UI/UX Design
 
-The app fetches articles from public RSS feeds, caches them locally for offline reading, and lets users maintain a separate list of saved articles.
+The app downloads articles from public RSS feeds, caches them in Room for offline browsing, opens full stories in an in-app WebView, and maintains a separate list of saved articles.
+
+## UI preview
+
+These documentation previews reflect the current XML layouts, colors, gradients, navigation states, and screen content hierarchy.
+
+| Home | Offline mode | Saved stories |
+| --- | --- | --- |
+| ![Update home screen](docs/screenshots/home-screen.png) | ![Update offline mode screen](docs/screenshots/offline-screen.png) | ![Update saved stories screen](docs/screenshots/saved-screen.png) |
+
+| Cyber Security | AI / ML | Data Science |
+| --- | --- | --- |
+| ![Cyber Security articles](docs/screenshots/cyber-screen.png) | ![AI and machine learning articles](docs/screenshots/ai-screen.png) | ![Data Science articles](docs/screenshots/data-screen.png) |
 
 ## Features
 
-- Browse recent technology news by category.
+- Browse current technology news across six color-coded categories.
+- See cached article counts directly on the Home and Offline category cards.
 - Read full articles in an in-app WebView.
 - Cache fetched articles locally with Room.
 - Browse cached article summaries without an internet connection.
-- Long-press an article to add it to Saved Articles.
+- Long-press an online or offline article to save it.
 - Long-press a saved article to remove it.
+- See an empty state and live saved-item count on the Saved Stories screen.
+- Move between Home, Offline mode, and Saved using a persistent bottom navigation bar.
+- Identify the current navigation destination through active text and icon styling.
 - Detect unavailable internet access and offer Wi-Fi settings, retry, or offline mode.
-- Display animated loading states while content is being retrieved.
+- Display compact Material loading indicators while network or database work completes.
+
+## Implemented changes
+
+### Home and category redesign
+
+- Replaced the original home layout with a briefing-style screen.
+- Added six reusable category cards with descriptions, source chips, cached counts, and individual gradients.
+- Added a matching Offline Briefing screen.
+- Applied each category card gradient to its online and offline article screens.
+- Added persistent Home, Offline mode, and Saved navigation with an active destination state.
+
+### Saved Stories and loading states
+
+- Rebuilt Saved Stories with a lavender surface, gradient header, saved count, and styled empty state.
+- Added category-aware gradients to saved article cards.
+- Updated deletion handling so counts and the empty state respond immediately.
+- Replaced the rendered Lottie loaders with formal Material circular progress indicators.
+
+### Centralized application executors
+
+- Added `AppExecutors` as the application-wide executor provider.
+- Routed manual database work through the ordered disk executor.
+- Routed connectivity and WebView checks through the network executor.
+- Routed asynchronous UI callbacks through the main-thread executor.
+- Left WorkManager jobs on WorkManager-managed background threads to avoid redundant executor nesting.
+
+### Shared RSS pipeline
+
+- Centralized all publisher URLs, Room categories, and worker keys in `FeedSource`.
+- Added one reusable OkHttp client with explicit timeouts and response handling.
+- Replaced six duplicated XML parsers with one namespace-aware RSS parser.
+- Added fallbacks for Atom-style links, summary/content fields, alternate dates, and URL-based GUIDs.
+- Added an `ArticleRepository` to coordinate download, parsing, validation, and Room persistence.
+- Replaced six category workers with one configurable `ArticleRefreshWorker`.
+- Made category replacement transactional so failed or empty refreshes do not erase valid cached articles.
+- Added parser, network-client, and worker-input tests.
+
+### RecyclerView safety
+
+- Article click and long-press callbacks resolve the current adapter position at interaction time.
+- Removed stale bind-position captures and guarded `RecyclerView.NO_POSITION`.
+- Long-press interactions are consumed so they do not also trigger the regular click action.
+
+### Organized layout resources
+
+- Split the original flat layout collection into Home, Categories, Offline, Saved, Cards, Loading, and Web resource roots.
+- Kept resource filenames unchanged so `R.layout.*` and `@layout/*` references remain stable.
+- Configured Gradle to merge all grouped roots into the application's single Android resource namespace.
 
 ## News sources
 
@@ -33,48 +97,53 @@ The app fetches articles from public RSS feeds, caches them locally for offline 
 | Data Science | KDnuggets |
 | UI/UX | Nielsen Norman Group |
 
-The application depends on the structure and availability of these third-party RSS feeds. A feed format change may require an update to its corresponding parser.
+All six feeds currently expose conventional RSS items with `title`, `description`, `link`, and `pubDate`. The shared parser ignores publisher-specific namespace fields and supports a small set of defensive RSS and Atom fallbacks.
 
 ## How it works
 
-Each online category follows the same data flow:
+Each online category uses the same refresh pipeline:
 
 ```text
 Category Activity
       |
       v
-One-time WorkManager task
+ArticleRefreshWorker + FeedSource input
       |
       v
-Fetch and parse RSS XML
+ArticleRepository
+      |
+      +--> RssFeedClient / shared OkHttpClient
+      |
+      +--> RssParser
       |
       v
-Store category articles in Room
+Transactional category replacement in Room
       |
       v
-Observe Room with LiveData
+LiveData observation in the Activity
       |
       v
-Display articles in a RecyclerView
+RecyclerView article list
 ```
 
-Room acts as the offline cache. Saved Articles use a separate Gson-serialized list stored in `SharedPreferences`.
+Room is the offline article cache. Saved Stories use a separate Gson-serialized list in `SharedPreferences`.
 
 ## Technology stack
 
-- Java
+- Java 11
 - Android Views and XML layouts
 - AndroidX AppCompat and Material Components
-- WorkManager for background RSS fetching
-- Room for cached article storage
-- LiveData for database observation
+- WorkManager for constrained background refreshes
+- Room and LiveData for cached article storage and observation
+- OkHttp for RSS downloads
+- SAX for namespace-aware XML parsing
 - RecyclerView and CardView for article lists
 - Gson and SharedPreferences for saved articles
-- Lottie for loading animations
+- JUnit and MockWebServer for local tests
 
 ## Requirements
 
-- Android Studio with a compatible JDK (Android Studio's bundled JDK works)
+- Android Studio with a compatible JDK; Android Studio's bundled JDK works
 - Android SDK 35 for compilation
 - An Android device or emulator running Android 12/API 31 or newer
 - Internet access for fetching live news and opening full articles
@@ -88,12 +157,12 @@ The application currently uses:
 ## Getting started
 
 1. Clone or download the project.
-2. Open the project directory in Android Studio.
+2. Open the `Update v2/Update` directory in Android Studio.
 3. Allow Gradle to synchronize and download the required dependencies.
-4. Select an Android 12 or newer device/emulator.
+4. Select an Android 12 or newer device or emulator.
 5. Run the `app` configuration.
 
-To build from a Windows terminal:
+To build from Windows:
 
 ```powershell
 .\gradlew.bat assembleDebug
@@ -109,64 +178,82 @@ The generated debug APK is placed under `app/build/outputs/apk/debug/`.
 
 ## Using the app
 
-1. Select a category from the home screen to fetch its latest articles.
-2. Tap an article to open the full page in the in-app browser.
+1. Select a category from Today’s Briefing to refresh and display its articles.
+2. Tap an online article to open the full page in the in-app browser.
 3. Long-press an article and confirm to save it.
-4. Open **Saved Articles** from the home or offline screen to view saved items.
-5. Long-press a saved article to remove it.
-6. Select **Offline Mode** to browse summaries previously cached in Room.
+4. Open Saved to view, count, open, or remove saved stories.
+5. Open Offline mode to browse summaries previously cached in Room.
 
 Offline mode becomes available after articles have been fetched successfully at least once. Full web articles still require an internet connection.
 
 ## Project structure
 
 ```text
-app/src/main/
-|-- AndroidManifest.xml
-|-- java/com/systemtech/update/
-|   |-- MainActivity.java              # Home screen and connectivity handling
-|   |-- *Activity.java                 # Online category screens
-|   |-- OfflineActivity.java           # Offline category menu
-|   |-- SavedPreferencesActivity.java  # Saved article screen
-|   |-- WebPageActivity.java           # In-app article browser
-|   |-- Utils.java                     # SharedPreferences saved-article storage
-|   |-- adapters/                      # RecyclerView adapters
-|   |-- backgroundTasks/               # RSS-fetching WorkManager workers
-|   |-- database/                      # Room entity, DAO, and database
-|   `-- offlineMode/                   # Offline category screens
-`-- res/
-    |-- layout/                        # XML screen and list layouts
-    |-- drawable/                      # Category backgrounds and graphics
-    |-- raw/                           # Lottie loading animation
-    `-- values/                        # Strings, colors, fonts, and themes
+app/src/
+|-- main/
+|   |-- AndroidManifest.xml
+|   |-- java/com/systemtech/update/
+|   |   |-- MainActivity.java              # Home briefing and connectivity handling
+|   |   |-- *Activity.java                 # Online category screens
+|   |   |-- OfflineActivity.java           # Offline briefing
+|   |   |-- SavedPreferencesActivity.java  # Saved Stories screen
+|   |   |-- WebPageActivity.java           # In-app article browser
+|   |   |-- Utils.java                     # SharedPreferences saved-article storage
+|   |   |-- adapters/                      # RecyclerView adapters
+|   |   |-- backgroundTasks/
+|   |   |   `-- ArticleRefreshWorker.java  # Generic WorkManager refresh worker
+|   |   |-- database/                      # Room entity, DAO, and database
+|   |   |-- feeds/                         # FeedSource, client, parser, and repository
+|   |   |-- helpers/
+|   |   |   `-- AppExecutors.java          # Disk, network, and main-thread executors
+|   |   `-- offlineMode/                   # Offline category screens
+|   |-- res/
+|   |   |-- drawable/                      # Category gradients, icons, and surfaces
+|   |   `-- values/                        # Strings, colors, fonts, and themes
+|   `-- res-layouts/                       # Grouped layout resource roots
+|       |-- home/layout/                   # Home briefing
+|       |-- categories/layout/             # Six online category screens
+|       |-- offline/layout/                # Offline briefing and category screens
+|       |-- saved/layout/                  # Saved Stories screen
+|       |-- cards/layout/                  # Category cards and article rows
+|       |-- loading/layout/                # Online and offline loading includes
+|       `-- web/layout/                    # In-app WebView screen
+|-- test/                                  # Parser and MockWebServer tests
+`-- androidTest/                           # Android worker-input tests
 ```
 
 ## Testing
 
-Run the local unit tests with:
+Run local unit tests:
 
 ```powershell
 .\gradlew.bat testDebugUnitTest
 ```
 
-The project also contains an instrumentation test for the Cyber Security worker. It requires an Android device or emulator and live network access because it fetches the real RSS feed.
+Build the app and instrumentation-test APK:
 
 ```powershell
-.\gradlew.bat connectedDebugAndroidTest
+.\gradlew.bat assembleDebug assembleDebugAndroidTest
 ```
 
-The debug build and local unit-test task currently complete successfully. The Gradle `check` lifecycle is not yet usable because it references a `checkstyleDebug` task that has not been defined.
+Run Android lint:
+
+```powershell
+.\gradlew.bat lintDebug
+```
+
+The local unit tests, debug build, Android test build, and lint task currently complete successfully.
 
 ## Current limitations
 
-- RSS parsing is implemented separately for each category and assumes a conventional RSS structure.
-- Category Activities, workers, offline Activities, and layouts contain substantial duplicated logic.
-- Offline data is refreshed only when its online category is opened successfully.
-- Some RSS descriptions may contain HTML markup that is shown as plain text.
+- Online category Activities and offline category Activities still contain similar presentation logic.
+- Offline data refreshes only after its online category has completed a successful refresh.
+- Some RSS descriptions may contain HTML markup that is displayed as plain text.
 - Saved articles are not deduplicated.
-- Saved articles are stored independently from the Room offline cache.
+- Saved Stories are stored independently from the Room offline cache.
 - Full articles cannot be opened in offline mode.
-- Automated test coverage is currently limited.
+- The legacy Lottie dependency and raw animation asset remain in the project even though the active loaders use Material progress indicators.
+- Automated UI and end-to-end coverage is still limited.
 
 ## Permissions
 
@@ -177,5 +264,4 @@ The app requests:
 
 ## License
 
-No license has been added to this repository.
-
+No project-level license has been added to this repository.
