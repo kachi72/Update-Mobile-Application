@@ -25,7 +25,7 @@ public class SavedPreferencesActivity extends AppCompatActivity {
 
     private TextView txtSavedCount;
 
-    private View emptyState, homeNavigation, offlineNavigation;
+    private View emptyState, homeNavigation, offlineNavigation, helpNavigation;
 
     private ArrayList<Article> articles;
 
@@ -47,6 +47,7 @@ public class SavedPreferencesActivity extends AppCompatActivity {
         txtSavedCount = findViewById(R.id.txtSavedCount);
         homeNavigation = findViewById(R.id.navHome);
         offlineNavigation = findViewById(R.id.navOffline);
+        helpNavigation = findViewById(R.id.navHelp);
 
         // load the articles from savedPreferences
         articles = Utils.getInstance(this).getUserFav();
@@ -61,6 +62,8 @@ public class SavedPreferencesActivity extends AppCompatActivity {
         });
         offlineNavigation.setOnClickListener(view ->
                 OfflineModeNavigator.open(SavedPreferencesActivity.this));
+        helpNavigation.setOnClickListener(view ->
+                MainActivity.showHelpDialog(SavedPreferencesActivity.this));
 
         updateRecycler();
         handleEmptyList();

@@ -1,7 +1,6 @@
 package com.systemtech.update;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private View cyber, ai, softwareEng, network, dataScience, ui, offline, savedPreferences;
+    private View cyber, ai, softwareEng, network, dataScience, ui, offline, savedPreferences, help;
     private TextView cyberCount, aiCount, softwareCount, networkCount, dataCount, uiCount;
 
     @Override
@@ -121,25 +120,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        help.setOnClickListener(view -> showHelpDialog(MainActivity.this));
+
     }
 
 
      //   build the alert dialog to show when the help button is clicked
-    private void showAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+    public static void showHelpDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("App Functionalities");
         builder.setMessage("- This app delivers breaking IT-based news specifically tailored to 6 key domains\n" +
-                "- Offline mode only works after you have connected to the internet at least once\n" +
+                "- Offline mode becomes available after the app downloads at least one article\n" +
                 "- Long press on an article post to save it to Saved Articles\n" +
                 "- In Saved Articles Mode, long press on an article to delete it from your Saved Articles\n" +
                 "- In Offline Mode, you cannot view full articles, only the short description\n" +
                 "                           Enjoy learning :)");
-        builder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // left empty to dismiss the dialog when clicked
-            }
-        });
+        builder.setNegativeButton("Dismiss", (dialogInterface, which) -> dialogInterface.dismiss());
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -168,12 +164,7 @@ public class MainActivity extends AppCompatActivity {
             checkForInternetConnectivity();
         });
 
-        builder.setNeutralButton("Offline Mode", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                offline();
-            }
-        });
+        builder.setNeutralButton("Offline Mode", (dialogInterface, which) -> offline());
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -190,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         ui = findViewById(R.id.btnUI);
         offline = findViewById(R.id.btnOffline);
         savedPreferences = findViewById(R.id.btnSavedPreferences);
+        help = findViewById(R.id.navHelp);
         cyberCount = findViewById(R.id.txtCyberCount);
         aiCount = findViewById(R.id.txtAiCount);
         softwareCount = findViewById(R.id.txtSoftwareCount);

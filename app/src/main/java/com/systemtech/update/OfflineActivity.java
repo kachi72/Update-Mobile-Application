@@ -1,13 +1,11 @@
 package com.systemtech.update;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -26,7 +24,7 @@ import java.util.List;
 
 public class OfflineActivity extends AppCompatActivity {
 
-    private View cyber, ai, softwareEng, network, dataScience, ui, home, savedPreferences;
+    private View cyber, ai, softwareEng, network, dataScience, ui, home, savedPreferences, help;
     private TextView cyberCount, aiCount, softwareCount, networkCount, dataCount, uiCount;
 
     @Override
@@ -138,26 +136,8 @@ public class OfflineActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
 
-    public void showAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(OfflineActivity.this);
-        builder.setTitle("App Functionalities");
-        builder.setMessage("- This app delivers breaking IT-based news specifically tailored to 6 key domains\n" +
-                "- Offline mode only works after you have connected to the internet at least once\n" +
-                "- Long press on an article post to save it to Saved Articles\n" +
-                "- In Saved Articles Mode, long press on an article to delete it from your Saved Articles\n" +
-                "- In Offline Mode, you cannot view full articles, only the short description\n" +
-                "                           Enjoy learning :)");
-        builder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // left empty to dismiss the dialog when clicked
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        help.setOnClickListener(view -> MainActivity.showHelpDialog(OfflineActivity.this));
     }
 
     // initialize all ui elements
@@ -170,6 +150,7 @@ public class OfflineActivity extends AppCompatActivity {
         ui = findViewById(R.id.btnUI);
         home = findViewById(R.id.navHome);
         savedPreferences = findViewById(R.id.btnSavedPreferences);
+        help = findViewById(R.id.navHelp);
         cyberCount = findViewById(R.id.txtCyberCount);
         aiCount = findViewById(R.id.txtAiCount);
         softwareCount = findViewById(R.id.txtSoftwareCount);
