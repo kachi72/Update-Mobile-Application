@@ -2,13 +2,8 @@ package com.systemtech.update;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,21 +16,17 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.systemtech.update.database.AppDatabase;
 import com.systemtech.update.database.Article;
-import com.systemtech.update.helpers.AppExecutors;
+import com.systemtech.update.helpers.NetworkStatus;
 import com.systemtech.update.helpers.OfflineModeNavigator;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
-
     private View cyber, ai, softwareEng, network, dataScience, ui, offline, savedPreferences, help;
     private TextView cyberCount, aiCount, softwareCount, networkCount, dataCount, uiCount;
+    private AlertDialog internetDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
         // initialize savedPreferences
         Utils.getInstance(this);
-
-
-        // check if the device is connected to the internet
-        checkForInternetConnectivity();
 
 
     }
@@ -152,22 +139,27 @@ public class MainActivity extends AppCompatActivity {
 
 
     // shows an alert dialog to make sure device is connected to internet
-    private void showInternetDialog(MainActivity mainActivity) {
+    private void showInternetDialog() {
+        if (internetDialog != null && internetDialog.isShowing()) {
+            return;
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("No Internet Connection");
-        builder.setMessage("This app requires internet access. Please connect to continue.");
-        builder.setCancelable(false); // User cannot dismiss by tapping outside or pressing back
-        builder.setPositiveButton("Go to Settings", (dialog, which) -> {
-            this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+        builder.setTitle(R.string.internet_dialog_title);
+        builder.setMessage(R.string.internet_dialog_message);
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.internet_dialog_settings, (dialog, which) ->
+                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)));
+        builder.setNegativeButton(R.string.internet_dialog_retry, (dialog, which) -> {
+            internetDialog = null;
+            findViewById(R.id.main).post(this::checkForInternetConnectivity);
         });
-        builder.setNegativeButton("Retry", (dialog, which) -> {
-            checkForInternetConnectivity();
-        });
+        builder.setNeutralButton(R.string.internet_dialog_offline,
+                (dialogInterface, which) -> offline());
 
-        builder.setNeutralButton("Offline Mode", (dialogInterface, which) -> offline());
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        internetDialog = builder.create();
+        internetDialog.setOnDismissListener(dialog -> internetDialog = null);
+        internetDialog.show();
     }
 
 
@@ -262,59 +254,19 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public static boolean isConnectedToInternet(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (cm != null) {
-            Network network = cm.getActiveNetwork();
-            if (network == null) return false;
-
-            NetworkCapabilities capabilities = cm.getNetworkCapabilities(network);
-            return capabilities != null && (
-                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
-                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
-            );
-        }
-        return false;
-    }
-
     /**
-     * checks if host device has internet connectivity
-     * @return true if the device has internet connectivity
-     */
-    private boolean hasRealInternetAccess() {
-        Log.d(TAG, "hasRealInternetAccess: Inside method to check for internet access");
-        try {
-            HttpURLConnection urlConnection = (HttpURLConnection)
-                    (new URL("https://www.google.com").openConnection());
-            urlConnection.setRequestProperty("User-Agent", "ConnectionTest");
-            urlConnection.setRequestProperty("Connection", "close");
-            urlConnection.setConnectTimeout(3000);
-            urlConnection.connect();
-            return (urlConnection.getResponseCode() == 200);
-        } catch (IOException e) {
-            Log.e(TAG, "hasRealInternetAccess: Internet check failed", e);
-            return false;
-        }
-    }
-
-
-    /**
-     * check if the device is connected to the internet in background
+     * Checks whether Android has validated the active network for internet access.
      */
     private void checkForInternetConnectivity(){
-        AppExecutors executors = AppExecutors.getInstance();
-        executors.networkIO().execute(() -> {
-            boolean isConnected = isConnectedToInternet(MainActivity.this);
-            boolean hasInternet = hasRealInternetAccess();
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
 
-            executors.mainThread().execute(() -> {
-                if (!isFinishing() && !isDestroyed() && (!isConnected || !hasInternet)) {
-                    showInternetDialog(MainActivity.this);
-                }
-            });
-        });
+        if (!NetworkStatus.hasValidatedInternet(this)) {
+            showInternetDialog();
+        } else if (internetDialog != null && internetDialog.isShowing()) {
+            internetDialog.dismiss();
+        }
     }
 
 }

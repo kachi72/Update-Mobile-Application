@@ -1,10 +1,8 @@
 package com.systemtech.update;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,8 +12,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
@@ -25,6 +21,7 @@ import com.systemtech.update.backgroundTasks.ArticleRefreshWorker;
 import com.systemtech.update.database.AppDatabase;
 import com.systemtech.update.database.Article;
 import com.systemtech.update.feeds.FeedSource;
+import com.systemtech.update.helpers.FeedRefreshErrorHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,13 +64,12 @@ public class AiActivity extends AppCompatActivity {
     }
 
     private void initWorker() {
-        Constraints constraint = new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build();
+        if (!FeedRefreshErrorHandler.canStartRefresh(this)) {
+            return;
+        }
 
         OneTimeWorkRequest fetchDataRequest = ArticleRefreshWorker.createRequest(
-                FeedSource.AI_ML,
-                constraint
+                FeedSource.AI_ML
         );
 
         WorkManager.getInstance(this).enqueue(fetchDataRequest);
@@ -91,9 +87,7 @@ public class AiActivity extends AppCompatActivity {
                     });
                 }
                 else if (workInfo != null && workInfo.getState() == WorkInfo.State.FAILED){
-                    Toast.makeText(AiActivity.this, "Error fetching live news, check your internet connection and try again", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(AiActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    FeedRefreshErrorHandler.handleFailure(AiActivity.this, workInfo);
                 }
             }
         });

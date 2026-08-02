@@ -39,6 +39,10 @@ public class ArticleRefreshWorkerTest {
 
         ListenableWorker.Result result = worker.startWork().get(10, TimeUnit.SECONDS);
 
-        assertThat(result).isEqualTo(ListenableWorker.Result.failure());
+        assertThat(result).isInstanceOf(ListenableWorker.Result.Failure.class);
+        ListenableWorker.Result.Failure failure = (ListenableWorker.Result.Failure) result;
+        assertThat(failure.getOutputData().getString(
+                ArticleRefreshWorker.KEY_FAILURE_REASON
+        )).isEqualTo(ArticleRefreshWorker.FAILURE_GENERIC);
     }
 }

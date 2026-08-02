@@ -17,9 +17,9 @@ public final class RssFeedClient {
 
     private static final OkHttpClient SHARED_CLIENT = new OkHttpClient.Builder()
             .connectTimeout(20, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(20, TimeUnit.SECONDS)
             .writeTimeout(20, TimeUnit.SECONDS)
-            .callTimeout(45, TimeUnit.SECONDS)
+            .callTimeout(20, TimeUnit.SECONDS)
             .followRedirects(true)
             .followSslRedirects(true)
             .build();

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feed_error_no_internet">No internet connection. Connect to the internet and try again.</string>
+    <string name="feed_error_slow_connection">The feed is taking too long to respond. Please try a stronger connection.</string>
+    <string name="feed_error_generic">The news feed could not be loaded. Please try again later.</string>
+    <string name="internet_dialog_title">You’re offline</string>
+    <string name="internet_dialog_message">Update works best with an internet connection, but you can continue with articles already downloaded in Offline Mode.</string>
+    <string name="internet_dialog_settings">Wi-Fi settings</string>
+    <string name="internet_dialog_retry">Retry</string>
+    <string name="internet_dialog_offline">Offline Mode</string>
+</resources>

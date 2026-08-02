@@ -8,7 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -52,5 +54,19 @@ public class RssFeedClientTest {
 
         assertThrows(IOException.class,
                 () -> client.download(server.url("/feed").toString()));
+    }
+
+    @Test
+    public void download_throwsWhenTheCompleteCallTimesOut() {
+        client = new RssFeedClient(new OkHttpClient.Builder()
+                .callTimeout(200, TimeUnit.MILLISECONDS)
+                .build());
+        server.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBodyDelay(1, TimeUnit.SECONDS)
+                .setBody("<rss version=\"2.0\"><channel /></rss>"));
+
+        assertThrows(InterruptedIOException.class,
+                () -> client.download(server.url("/slow-feed").toString()));
     }
 }
