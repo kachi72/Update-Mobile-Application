@@ -1,4 +1,4 @@
-<h1><img src="app/src/main/res/drawable-nodpi/app_logo_modern.png" alt="Update app logo" width="48" height="48" align="center"> Update</h1>
+<h1><img src="app/src/main/res/drawable-nodpi/app_logo_modern.png" alt="Update app logo" width="85" height="85" align="center"> Update</h1>
 
 Update is an Android technology-news reader covering six domains:
 
